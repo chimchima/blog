@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}log in{% endblock %}
+
+{% block content %}
+
+{% if notfound %}
+    <p>User not found</p>
+{% endif %}
+
+{% if wrong %}
+    <p>Wrong password</p>
+{% endif %}
+
+<!--<form action="{% url 'registration:authorisation'%}" method="POST">
+
+    {% csrf_token %}
+
+    <input type="text" required placeholder="username" name="username"><br>
+    <textarea name="password" required="" placeholder="password" cols="21" rows="1"></textarea><hr>
+    <button type="submit">log in</button>
+</form>-->
+<hr>
+
+{% endblock %}

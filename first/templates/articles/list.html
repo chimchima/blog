@@ -1,0 +1,84 @@
+{%extends 'base.html'%}
+
+{%block title%}recent articles{%endblock%}
+
+{%block content%}
+    {% load template_helpers %}
+    <table id="table">
+        <thead>
+            <tr>
+                <th>articles</th> 
+                <th>comments</th> 
+                <th>was published</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if latest_articles_list %}
+                {% for a in latest_articles_list %}
+                    <tr>
+                        <td><a href="{% url 'articles:detail' a.id %}">{{a.article_title}}</a></td>
+                        <td>{{a.comments}}</td>
+                        <td>{{a.pub_date}}</td>
+                    </tr> 
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    <!--<form action="{% url 'articles:create' %}" method="POST">
+
+        {% csrf_token %}
+    
+        <input type="text" required placeholder="article title" name="title"><br>
+        <textarea name="text" required="" placeholder="article text" cols="30" rows="10"></textarea><hr>
+        <button type="submit">add article</button>
+    </form>-->
+    <div style="margin:3em;">
+        <a href="create"><button class="btn btn-primary btn-lg " id="load1" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order">Create</button></a>
+    </div>
+    <!--<img src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/55/556ad181c830e2af2deca1e80e97a8ec191e88d4_full.jpg" alt="lefrut" width="500">-->
+    <a href="#" id="ajax-text-me">ajax</a>
+    <div id="more-text-here1"></div>
+    <div id="more-text-here2"></div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#ajax-text-me").click(function() {
+                alert('Hello world');
+                //$("#more-text-here1").text('l;;kk');
+                $.ajax({
+                    type: 'GET',
+                    async: true,
+                    url: 'add_ajax',//"{% url 'articles:add_ajax' %}"
+                    //data: 'data',
+                    //data: query,//data: "param1=value1&param2=value2;",
+                    dataType: 'json',
+                    success: function(data) {
+                        alert('ok');
+                        $("#more-text-here1").append(data['first-text']);
+                        $("#more-text-here2").append(data['second-text']);
+    
+                    },
+                    error: function(){
+                        alert('not ok')
+                    }
+                    //processData: boolean(true)
+                });
+                /*$.get("add_ajax", function(data) {
+                    alert(data);
+                }, 'text');*/
+                /*$.get(
+                    "/add_ajax",
+                    function(data){
+                        alert(data);
+                    },
+                    text
+                    );*/
+                
+                /*function onAjaxSuccess(data)
+                {
+                // Здесь мы получаем данные, отправленные сервером и выводим их на экран.
+                alert(data);
+                }*/
+            });
+        });
+    </script>    
+{%endblock%}

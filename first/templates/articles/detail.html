@@ -1,0 +1,166 @@
+{%extends 'base.html'%}
+
+{%block title%}{{ article.article_title }}{%endblock%}
+
+{% load static %}
+
+{%block content%}
+<h2>{{article.article_title}}</h1>
+<p>{{article.article_txt}}</p>
+<em>{{article.pub_date}}</em><br>
+<em>author: {{article.author_name}}</em><br>
+{% if article.was_published_recently %}
+    NEW!
+{%endif%}
+<p>views: {{article.views}}</p>
+
+{% if user.username == article.author_name or user.is_superuser%}
+    <form action="{% url 'articles:delete' article.id %}">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+{% endif %}
+
+<hr>
+
+{% if latest_comments_list %}
+    <div id="comments">
+        {% for comment in latest_comments_list %}
+             <em>{{ comment.author_name }}</em><br>
+             {{comment.comment_text}}
+             {% if user.username == comment.author_name or user.is_superuser %}
+                <form action="{% url 'articles:delete_comment' comment.id %}" method="POST">
+                    {% csrf_token %}
+                    <!--<input type="hidden" value="{{comment.id}}" name="comment_id" readonly><br>-->
+                    <button type="submit">Delete comment</button>
+                </form>
+             {% endif %}
+             <form action="{% url 'articles:like_comment' comment.id %}" method="POST">
+                {% csrf_token %}
+                <!--<input type="hidden" value="{{comment.id}}" name="comment_id" readonly><br>-->
+                <button type="submit">Like {{ comment.likes }}</button>
+            </form>
+            {% for answer in answers %}
+                {% if answer.comment_id == comment.id %}
+                    <div style="margin:3em;">
+                        <p>Author: {{ answer.author_name }}</p>
+                        <p>{{ answer.text }}</p>
+                        <form action="{% url 'articles:like_answer' answer.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit">Like {{ answer.likes }}</button>
+                        </form>
+                    </div>
+                {% endif %}
+                {% if user.username == answer.author_name or user.is_superuser %}
+                    <div style="margin:3em;">
+                        <form action="{% url 'articles:delete_answer' answer.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit">Delete answer</button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if user.is_authenticated %}
+                <form action="{% url 'articles:add_answer' comment.id%}" method="POST">
+                    {% csrf_token %}
+                    <textarea name="answer_text" id="" name="answer_text" placeholder="answer text" cols="20" rows="1"></textarea>
+                    <button type="submit">Leave answer</button>
+                </form>
+            {% endif %}
+         <br>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>
+        <em>No comments</em>
+    </p>
+
+{% endif %}
+
+<form action="{% url 'articles:addlike' article.id %}" method="POST">
+
+    {% csrf_token %}
+
+    <!--<input type="hidden" value="{{article.id}}" name="art_id">-->
+    <button type="submit"><p><img height="20px" src="{% static 'like.jpeg' %}" alt="like">{{ article.likes }}</p></button>
+
+</form>
+
+<hr>
+
+{% if user.is_authenticated %}
+<!-- <form action="{% url 'articles:leave_comment' article.id %}" method="POST"> -->
+<form action="">
+    {% csrf_token %}
+
+    <!--<input type="hidden" value="{{user.get_username}}" name="name" readonly><br>-->
+    <textarea name="text" id="comment_text" required="" placeholder="comment text" cols="30" rows="10"></textarea><br>
+    <div style="margin:3em;">
+        <button id="leave_comment" class="btn btn-primary btn-lg " id="load1" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order">Leave comment</button>
+    </div>
+</form>
+<hr>
+{% else %}
+<p>log in to leave comments</p>
+{% endif %}
+
+<div style="margin:3em;">
+    <a href="../"><button class="btn btn-primary btn-lg " id="load1" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order">All articles</button></a>
+</div>
+<script>
+    var comments;
+    $(document).ready(function(){
+        $.ajax({
+            type: 'GET',
+            async: true,
+            url: 'get_json_comments/',
+            dataType: 'json',
+            success: function(data){
+                comments = data;
+                try{
+                    alert(comments);
+                }catch(e){
+                    alert(e);
+                }
+            }
+        });
+        comments.array.forEach(element => {
+            try{
+                alert(Element);
+            }catch(e){
+                alert(e);
+            }
+        });
+        $('#leave_comment').click(function(){
+            /*try{
+                alert(JSON.parse(json_comments_list));
+            }catch(e){
+                alert(e);
+            }*/
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: 'leave_comment/',
+                data: {text: $('#comment_text').val()},
+                dataType: 'json',
+                success: function(data){
+                    if(data['response'] == 'ok'){
+                        //alert(JSON.parse(json_comments_list));
+                        try{
+                            $('#comments').load("{% url 'articles:detail' article.id %} #comments");
+                        }catch(e){
+                            alert(e);
+                        }
+                    }else{
+                        alert('failed');
+                    }
+                },
+                error: function(){
+                    alert('error');
+                }
+            });
+        });
+    });
+</script>
+
+{%endblock%}

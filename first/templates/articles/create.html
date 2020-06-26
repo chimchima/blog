@@ -1,0 +1,22 @@
+{%extends 'base.html'%}
+
+{%block title%}create{%endblock%}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<form action="{% url 'articles:new' %}" method="POST">
+
+    {% csrf_token %}
+    <input type="hidden" name="username" value="{{user.get_username}}" readonly><br>
+    <input type="text" required placeholder="article title" name="title"><br>
+    <textarea name="text" required="" placeholder="article text" cols="30" rows="10"></textarea><hr>
+    <div style="margin:3em;">
+        <button type="submit" class="btn btn-primary btn-lg " id="load1" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order">Add article</button>
+    </div>
+</form>
+{% else %}
+<p>log in to create articles</p>
+{% endif %}
+
+{% endblock %}

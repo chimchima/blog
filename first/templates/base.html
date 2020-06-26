@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    {% load template_helpers %}
+    {% load bootstrap4 %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+        <!--        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script> -->
+        <title>{% block title %}My site{%endblock%}</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+        <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+        <script src="{% static 'script.js' %}"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164154803-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          
+          gtag('config', 'UA-164154803-1');
+        </script>
+
+    </head>
+    <body>
+        <nav>
+          <ul>
+            <li><a href="#"><img class="img-responsive" src="https://www.leaderssl.ru/assets/getwildcard_engine/header/leadertelecom_ltd-1c8f9ca7d90e19239e7bb9a505ceeb7397064655a582eae983f1cd59d2297e6f.png" alt="Leadertelecom ltd"></a></li>
+            {% if user.is_superuser %}
+            <li><a href="../../../admin">Admin</a></li>
+            {% endif %}
+            <li><a href="../../articles/">Articles</a></li>
+            <li><a href="#">Other apps</a></li>
+            <li><a href="../../about_me">About me</a></li>
+            <!--<li><a href="../../registration">Registration</a></li>-->
+            {% if user.is_authenticated %}
+            <li><a href="#" id="username">User: {{ user.get_username }}</a></li>
+            <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   
+            {% else %}
+            <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+            <li><a href="../../registration">Registration</a></li> 
+            {% endif %}
+            <li><a href="../../articles/get_all_articles">API</a></li>
+          </ul>
+        </nav>
+        <br>
+        {%block content%}
+          <table>
+            <thead>
+              <tr>
+                <th>Option{</th>
+                <th>Default</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{% block td1 %}<strong>showSpeed</strong>{% endblock %}</td>
+                <td>{% block td2 %}15{% endblock %}</td>
+                <td>{% block td3 %}The speed of the show/reveal{% endblock %}</td>
+              </tr>
+              <tr>
+                <td><strong>showEasing</strong></td>
+                <td>'linear'</td>
+                <td>The easing of the show/reveal</td>
+              </tr>
+              <tr>
+                <td><strong>hideSpeed</strong></td>
+                <td>50</td>
+                <td>The speed of the hide/conceal</td>
+              </tr>
+              <tr>
+                <td><strong>hideEasing</strong></td>
+                <td>'linear'</td>
+                <td>The easing of the hide/conceal</td>
+              </tr>					
+              <tr>
+                <td><strong>width</strong></td>
+                <td>'auto'</td>
+                <td>The width that the data will be truncated to - <em>('auto' or px amount)</em></td>
+              </tr>
+              <tr>
+                <td><strong>ellipsis</strong></td>
+                <td>true</td>
+                <td>Set to true to enable the ellipsis</td>
+              </tr>
+              <tr>
+                <td><strong>title</strong></td>
+                <td>false</td>
+                <td>Set to true to show the full data on hover</td>
+              </tr>
+              <tr>
+                <td><strong>afterShow</strong></td>
+                <td> $.noop</td>
+                <td>The callback fired after the show/reveal</td>
+              </tr>
+              <tr>
+                <td><strong>afterHide</strong></td>
+                <td>$.noop</td>
+                <td>The callback fired after the hide/conceal</td>
+              </tr>
+            </tbody>
+          </table>
+        {%endblock%}
+    </body>
+</html>
