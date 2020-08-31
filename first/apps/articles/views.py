@@ -91,8 +91,8 @@ def new(request):
 	render(request, 'articles/list.html')
 	return HttpResponseRedirect(reverse('articles:detail', args=(art.id,)))
 
-def about_me(request):
-	return render(request, 'articles/about_me.html')
+'''def about_me(request):
+	return render(request, 'articles/about_me.html')'''
 
 def addlike(request, article_id):
 	#render(request, 'articles:detail')
