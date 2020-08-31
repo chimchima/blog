@@ -1,26 +1,17 @@
 from django.http import Http404, HttpResponseForbidden, HttpResponse, HttpResponseRedirect, JsonResponse
-
 from django.utils import timezone
-
 from django.urls import reverse
-
 from django.db import models
+from django.shortcuts import render
+import json
+from django.core import serializers
+import os
+import hashlib
+from django.views.decorators.csrf import csrf_exempt
+import pymorphy2
 
 from .models import Article, Comment, Answer
 
-from django.shortcuts import render
-
-import json
-
-from django.core import serializers
-
-import os
-
-import hashlib
-
-from django.views.decorators.csrf import csrf_exempt
-
-import pymorphy2
 morph = pymorphy2.MorphAnalyzer()
 
 '''class ArticleEncoder(json.JSONEncoder):
